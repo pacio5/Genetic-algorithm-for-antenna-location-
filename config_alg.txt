@@ -1,0 +1,26 @@
+# Fichero configuración para los parámetros propios del algoritmo genético
+
+Tamaño de la población:
+ 
+Iteraciones:
+
+Probabilidad de cruce:
+
+Probabilidad de mutación:
+
+# 0 sin elitismo
+Elitismo:
+
+# 0 -> Estacionario , 1 -> Generacional
+Reemplazamiento:
+
+# 0 -> Operador de cruce A , 1 -> Operador de cruce B
+Operador de cruce:
+
+# 0 -> Operador de mutación A , 1 -> Operador de mutación B
+Operador de mutación:
+
+# 0 -> Algoritmo de selección A , 1 -> Algoritmo de selección B
+Algoritmo selección:
+
+Número máximo antenas:
