@@ -21,7 +21,6 @@ public class Main {
 		Parameters p = new Parameters();
 		p.implementParameters(new File("config.txt"));
 
-		// Creo la popolazione
 		Population population = new Population(p);
 		population.init();
 
@@ -33,8 +32,8 @@ public class Main {
 			System.out.println("Best solution met: " + best.toString());
 		}
 
-		// Ciclo principale, continua fin quando ho iterazioni disponibili o fin quando
-		// non incontro il massimo
+		// Main cycle, continue as long as I have iterations available or until
+		// I'm not meeting the maximum
 		int iter = 0;
 		boolean top = false;
 
@@ -42,17 +41,16 @@ public class Main {
 			Population newPop = new Population(p);
 			Random rand = new Random();
 			for (int j = 0; j < p.getElitism(); j++) {
-				// Elitismo, essendo la popolazione ordinata in modo decrescente, prendo i primi
-				// elementi
+				// Elitism, being the population in descending order, I take the first elements
 				newPop.setIndividual(population.getIndividual(j), j);
 			}
 
-			// questo ciclo viene eseguito il numero di volte necessarie per creare
-			// la nuova popolazione delle stesse dimensioni della precedente
+			// this cycle is performed as many times as necessary to create
+			// the new population of the same size as the previous one
 			for (int i = p.getElitism(); i < population.getIndividuals().length; i += 2) {
 
 				Individual[] ind = new Individual[2];
-				// seletion (torneo - ruletta)
+				// seletion (torneo - roulette)
 
 				if (p.isAlSel()) {
 					ind[0] = (Individual) population.torneo().clone();
@@ -62,7 +60,7 @@ public class Main {
 					ind[1] = (Individual) population.rouletteWheel().clone();
 				}
 
-				// crossover (singolo punto - multi punto) - valuta la probabilità
+				// crossover (single point - multi point) - assesses the probability
 				Individual[] childs = new Individual[2];
 
 				if (rand.nextDouble() < p.getpCrossover()) {
@@ -74,7 +72,7 @@ public class Main {
 					childs[1] = (Individual) ind[1].clone();
 				}
 
-				// mutation - valuta la probabilità e l'operatore scelto
+				// mutation - assess the probability and the chosen operator
 				if (rand.nextDouble() < p.getpMutation()) {
 					if (p.isOpMutation())
 						childs[0].mutate(p.gridWidth(), p.getAccidents());
@@ -89,27 +87,27 @@ public class Main {
 						childs[1].mutate(p.getModAntennas());
 				}
 
-				// algoritmo di rimpiazzamento
+				// replacement algorithm
 				if (p.isReplacement()) {
-					// Generacional
+					// Generational
 
-					// Controlla se i figli sono validi, se lo sono li inserisce
-					if (childs[0].isInvalid(p.getAccidents()))
+					// Check if the children are valid, if they are, insert them
+					if (!childs[0].isInvalid(p.getAccidents()))
 						newPop.setIndividual(childs[0], i);
 					else
 						i--;
 
 					try {
-						if (childs[0].isInvalid(p.getAccidents())) {
+						if (!childs[0].isInvalid(p.getAccidents())) {
 							newPop.setIndividual(childs[1], i + 1);
 						} else {
 							i--;
 						}
 					} catch (Exception exc) {
-						// System.out.println(exc.toString());
+
 					}
 				} else {
-					// Estacionario
+					// Stationary
 
 					Individual[] test = new Individual[4];
 					test[0] = ind[0];
@@ -119,7 +117,7 @@ public class Main {
 						childs[0].setFitnessValue(-1);
 					else
 						childs[0].evaluate(p.gridWidth(), p.getAccidents(), p.getCoverageArea(),
-								p.getAvgCostAntennas());
+								p.getAvgCostAntennas(), p.getWeightingAreas(), p.getWeightingCost(), p.getWeightingConnection());
 
 					test[2] = childs[0];
 
@@ -127,7 +125,7 @@ public class Main {
 						childs[1].setFitnessValue(-1);
 					else
 						childs[1].evaluate(p.gridWidth(), p.getAccidents(), p.getCoverageArea(),
-								p.getAvgCostAntennas());
+								p.getAvgCostAntennas(), p.getWeightingAreas(), p.getWeightingCost(), p.getWeightingConnection());
 
 					test[3] = childs[1];
 
@@ -138,17 +136,16 @@ public class Main {
 					try {
 						newPop.setIndividual(test[1], i + 1);
 					} catch (Exception exc) {
-						// System.out.println(exc.toString());
+
 					}
 				}
 
 			}
 
-			// rimpiazza la popolazione con la nuova
+			// replaces the population with the new
 			population.setPopulation(newPop);
 			// evaluation
 			population.evalua();
-			//System.out.println("Iterazione: " + iter + "\nMigliore individuo: " + population.getBestIndividual());
 			Utility.bestIndividual(iter+1, p.isColors());
 			System.out.println(population.getBestIndividual().toString());
 			if (population.getBestIndividual().getFitnessValue() == 1)
@@ -158,10 +155,10 @@ public class Main {
 		}
 
 		if (top == false)
-			System.out.println("Hai terminato le iterazioni a disposizione, il miglior individuo è: \n"
+			System.out.println("You've finished the iterations available, the best individual is: \n"
 					+ population.getBestIndividual().toString());
 		else
-			System.out.println("Hai incontrato il massimo dopo: " + iter + " iterazioni; \n "
+			System.out.println("You've met the best after: " + iter + " iterations; \n "
 					+ population.getBestIndividual().toString());
 
 		

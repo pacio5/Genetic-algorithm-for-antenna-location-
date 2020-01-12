@@ -14,13 +14,13 @@ import org.jgrapht.graph.DefaultUndirectedGraph;
  * @author eliapacioni
  * @version 0.1
  * 
- *          Classe che definisce la struttura e le azioni di un individuo.
- *          Fondamentale all'interno del programma perché tutta l'esecuzione si
- *          basa sull'utilizzo degli individui. Implementa l'interfaccia
- *          Cloneable per effettuare la clonazione dell'individuo, così da non
- *          avere problemi durante le modifiche successive Implemente
- *          l'interfaccia Comparable per effettuare il confronto tra individui e
- *          per poterli ordinare in base al valore di fitness
+ *          Class that defines the structure and actions of an individual.
+ * 			Essential within the program because all the execution is
+ * 			based on the use of individuals. Implements the interface
+ * 			Cloneable to carry out the cloning of the individual, so as not to
+ * 			having problems during subsequent changes Implement
+ * 			the Comparable interface to make the comparison between individuals and
+ * 			in order to order them by fitness value
  * 
  */
 public class Individual implements Comparable<Individual>, Cloneable {
@@ -28,7 +28,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	private float fitnessValue;
 
 	/**
-	 * Costruttore senza parametri, individuo nullo.
+	 * Builder with no parameters, no individual.
 	 */
 	public Individual() {
 		genes = null;
@@ -37,12 +37,11 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param nMaxAntennas numero massimo di antenne che possono comporre
-	 *                     l'individuo
+	 * @param nMaxAntennas maximum number of antennas that can compose the individual
 	 * 
-	 *                     Istanzia l'individuo definendo solo il numero massimo di
-	 *                     antenne che possono comporlo, senza definire alcune
-	 *                     valore.
+	 * It instantiates the individual by defining only the maximum number of
+	 * antennas that can compose it, without defining some
+	 * value.
 	 */
 	public Individual(int nMaxAntennas) {
 		genes = new Antenna[nMaxAntennas];
@@ -50,27 +49,22 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param nMaxAntena  numero massimo di antenne che possono comporre l'individuo
-	 * @param modAntennas modelli di antenna disponibili
-	 * @param gridWidth   dimensione griglia
+	 * @param nMaxAntena  maximum number of antennas that can compose the individual
+	 * @param modAntennas available antenna models
+	 * @param gridWidth   grid width
 	 * 
-	 *                    Istanzia l'individuo impostando tutte le sue
-	 *                    caratteristiche, ad ogni creazione di un'antenna valuta se
-	 *                    è valida ed in caso risolve il problema.
+	 *                  He instantiates the individual by setting all his
+	 * 					characteristics, each time an antenna is created it evaluates whether
+	 * 					is valid and in case it solves the problem.
 	 */
 	public Individual(int nMaxAntena, Antenna[] modAntennas, int gridWidth, Accident[] accidents) {
 		genes = new Antenna[nMaxAntena];
 		for (int i = 0; i < nMaxAntena; i++) {
 			Random rand = new Random();
-			// cambia seme random
 			try {
 				genes[i] = (Antenna) modAntennas[rand.nextInt(modAntennas.length)].clone();
 				genes[i].setPosition(rand.nextInt(gridWidth), rand.nextInt(gridWidth));
-				// Un'antenna è invalida se sta nella stessa posizione di un'altra o sopra un
-				// accidente
-				
-				// controlla con un ciclo while se l'antenna è valida o no
-				
+
 				boolean isValid = true;
 				do {
 					if (antennaInvalid(i, accidents)) {
@@ -79,10 +73,9 @@ public class Individual implements Comparable<Individual>, Cloneable {
 					} else {
 						isValid = true;
 					}
-				}
-				while(isValid == false);
+				} while (isValid == false);
 			} catch (CloneNotSupportedException e) {
-				System.out.println("Problemi nella clonazione dell'antenna");
+				System.out.println("Problems with antenna cloning");
 				i--;
 			}
 		}
@@ -91,14 +84,14 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param gridWidth       dimensione griglia
-	 * @param accidents       accidenti geografici
-	 * @param aCoverage       aree da coprire
-	 * @param avgCostAntennas costo medio antenne
+	 * @param gridWidth       gird witdh
+	 * @param accidents       geographical incidents
+	 * @param aCoverage       areas to cover
+	 * @param avgCostAntennas average cost of antennas
 	 * 
-	 *                        Valuta l'individuo e salva il suo valore di fitness
+	 *                        Evaluates the individual and saves his fitness value
 	 */
-	public void evaluate(int gridWidth, Accident[] accidents, CoverageArea[] aCoverage, int avgCostAntennas) {
+	public void evaluate(int gridWidth, Accident[] accidents, CoverageArea[] aCoverage, int avgCostAntennas, int weightingAreas, int weightingCost, int weightingConnection) {
 		int[][] areaTotal = insertAntennasArea(gridWidth);
 		areaTotal = insertAccidents(areaTotal, accidents);
 		ArrayList<int[][]> aEvaluate = areaToEvaluate(areaTotal, aCoverage);
@@ -131,21 +124,16 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 		float fitnessConnections = evaluaAreasConnections(aCoverage);
 
-		//System.out.println("FitnessConnections: " + fitnessConnections);
-		/*
-		System.out.println("FitnessArea: " + fitnessArea);
-		System.out.println("FitnessAntennas: " + fitnessAntennas);*/
-		// Ponderazione della fitness di connessione posta a 0 perché al momento ha problemi
-		fitnessValue = (fitnessArea * 70 + fitnessAntennas * 30 + fitnessConnections * 0) / 100;
+		fitnessValue = (fitnessArea * weightingAreas + fitnessAntennas * weightingCost + fitnessConnections * weightingConnection) / 100;
 		fitnessValue = (float) (Math.ceil(fitnessValue * Math.pow(10, 2)) / Math.pow(10, 2));
 	}
 
 	/**
 	 * 
-	 * @param gridWidth dimensione della griglia
-	 * @return griglia contenente le antenne
+	 * @param gridWidth grid width
+	 * @return grid containing the antennas
 	 * 
-	 *         Posiziona le antenne di un individuo all'interno della griglia
+	 *         Place the antennas of an individual within the grid
 	 */
 	private int[][] insertAntennasArea(int gridWidth) {
 		int[][] areaTotal = new int[gridWidth][gridWidth];
@@ -153,7 +141,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 			for (int j = 0; j < gridWidth; j++)
 				areaTotal[i][j] = 0;
 
-		// Riempie la matrice con i valori delle antenne utilizzate
+		// Fills the matrix with the values of the antennas used
 		for (int i = 0; i < genes.length; i++) {
 			int x = genes[i].getX();
 			int y = genes[i].getY();
@@ -203,11 +191,11 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param zonaTotal griglia totale contente le antenne
-	 * @param accidents accidenti geografici
-	 * @return griglia totale contenente antenne e accidenti
+	 * @param zonaTotal total grid containing the antennas
+	 * @param accidents geographical incidents
+	 * @return total grid containing antennas and incidents
 	 * 
-	 *         Va chiamato sempre dopo aver posizionato le antenne.
+	 *         Always call after you place the antennas.
 	 */
 	private int[][] insertAccidents(int[][] zonaTotal, Accident[] accidents) {
 		for (int i = 0; i < accidents.length; i++) {
@@ -245,10 +233,10 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param zonaTotal area contenente le antenne e gli accidenti geografici
-	 * @param aCoverage zone da coprire
-	 * @return estre le zone da coprire e restituisce un ArrayList contente le zone
-	 *         interessate.
+	 * @param zonaTotal area containing the antennas and the geographical incidents
+	 * @param aCoverage areas to cover
+	 * @return extracts the zones to be covered and returns an ArrayList containing the zones
+	 * interested.
 	 */
 	private ArrayList<int[][]> areaToEvaluate(int[][] zonaTotal, CoverageArea[] aCoverage) {
 		ArrayList<int[][]> areas = new ArrayList<int[][]>();
@@ -260,11 +248,11 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param antennas modelli di antenne disponibili
+	 * @param antennas models of available antennas
 	 * 
-	 *                 Applica la mutazione all'individuo, cambiando un modello di
-	 *                 antenna, scelto aleatoriamente, ma mantenendo la posizione
-	 *                 dell'antenna precedente
+	 *          Apply the mutation to the individual, changing a pattern of
+	 * 			antenna, chosen randomly, but keeping the position
+	 * 			of the previous antenna
 	 */
 	public void mutate(Antenna[] antennas) {
 		Random rand = new Random();
@@ -278,10 +266,10 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param gridWidth dimensione della griglia
+	 * @param gridWidth grid width
 	 * 
-	 *                  Applica la mutazione all'individuo, cambiando la posizione
-	 *                  di un'antenna scelta aleatoriamente.
+	 *                  Apply the mutation to the individual, changing position
+	 * 					of a randomly chosen antenna.
 	 */
 	public void mutate(int gridWidth, Accident[] accidents) {
 		Random rand = new Random();
@@ -293,12 +281,12 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param index     indice dell'antenna da verificare
-	 * @param accidents accidenti geografici
-	 * @return false -> antenna valida, true -> antenna invalida
+	 * @param index     index of the antenna to be verified
+	 * @param accidents geographical incidents
+	 * @return false -> antenna valid, true -> antenna invalid
 	 * 
-	 *         Verifica se un'antenna è invalida. Un'antenna è invalida se è
-	 *         posizionata sopra un'altra antenna o sopra un'accidente geografico.
+	 *         Check if an antenna is invalid. An antenna is invalid if it is
+	 * 			placed on top of another antenna or on top of a geographical incident.
 	 */
 	private boolean antennaInvalid(int index, Accident[] accidents) {
 		boolean invalid = false;
@@ -318,7 +306,6 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 		if (!invalid)
 			for (int i = 0; i < accidents.length; i++) {
-				// Verificare se è compreso nell'accidente
 				int startX, endX, startY, endY;
 				if (accidents[i].getX1() > accidents[i].getX2()) {
 					startX = accidents[i].getX2();
@@ -346,10 +333,10 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @return false -> valido, true -> invalido
+	 * @return false -> valid, true -> invalid
 	 * 
-	 *         Verifica se un individuo è invalido. Un'individuo è invalido se ha
-	 *         almeno un'antenna invalida.
+	 *         Check if an individual is disabled. An individual is disabled if he has
+	 * 			at least one invalid antenna.
 	 */
 	public boolean isInvalid(Accident[] accidents) {
 		boolean invalid = false;
@@ -365,61 +352,85 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	/**
 	 * 
 	 * @param aCoverage
-	 * @return
+	 * @return fitness [0,1]
+	 * 
+	 * Assesses whether the areas are connected to each other and attributes a fitness
 	 */
 	private float evaluaAreasConnections(CoverageArea[] aCoverage) {
-		float fit = 0;
+		
 		Graph<Antenna, DefaultEdge> g = new DefaultUndirectedGraph<Antenna, DefaultEdge>(DefaultEdge.class);
-		// i vertici del grafo sono tutte le antenne dell'individuo
+		// the vertexes of the graph are all the antennae of the individual
 		for (int i = 0; i < genes.length; i++)
 			g.addVertex(genes[i]);
 
-		// gli archi sono composti da vertici connessi
+		// arches are composed of connected vertexes
 		for (int i = 0; i < genes.length; i++)
 			for (int j = i; j < genes.length; j++)
 				if (i != j && isConnected(genes[i], genes[j]))
 					g.addEdge(genes[i], genes[j]);
 		
-		// recupero le antenne che sono nelle zone e vedo se fanno parte di un percorso
-		// del grafo
-		ArrayList<Antenna> a = new ArrayList<Antenna>();
-		for (int i = 0; i < genes.length; i++)
-			if (coversTheArea(i, aCoverage).size() == 0)
-				a.add(genes[i]);
+		
 
-		// Percorsi del grafo
+		// I check the antennas covering the areas
+		ArrayList<Antenna> a = new ArrayList<Antenna>();
+		ArrayList<ArrayList<Integer>> ar = new ArrayList<ArrayList<Integer>>();
+		for (int i = 0; i < genes.length; i++) {
+			ArrayList<Integer> temp = new ArrayList<Integer>();
+			
+			temp = coversTheArea(i, aCoverage);
+			
+			if(temp.size() > 0) {
+				// At this point I have two ArrayLists, one with the antennas covering the areas and one with the areas covered by each antenna
+				a.add(genes[i]);
+				ar.add(temp);
+			}
+		}
+
+		// Graph paths
 		ConnectivityInspector<Antenna, DefaultEdge> isp = new ConnectivityInspector<Antenna, DefaultEdge>(g);
 
 		List<Set<Antenna>> l = isp.connectedSets();
-
-		float bestRoute = 0;
-		for (int i = 0; i < l.size(); i++) {
-			float count = 0;
-			for (int j = 0; j < a.size(); j++) {
-				if (l.get(i).contains(a.get(j)))
-					count++;
-			}
-
-			if (bestRoute < count)
-				bestRoute = count;
-		}
-
 		
-		if (bestRoute >= aCoverage.length)
-			fit = 1;
-		else if(bestRoute == 1)
-			fit = 0;
-		else 
-			fit = bestRoute / aCoverage.length;
+		int count = 0;
+		// For each antenna present I add the list of zones to an ArrayList, then delete the same zone numbers and get the number of connected zones
+		for(int i = 0; i < l.size(); i++) {
+			ArrayList<Integer> zonaTemp = new ArrayList<Integer>();
+			for(int j = 0; j < a.size(); j++) {
+				if(l.get(i).contains(a.get(j))) {
+					for(int k = 0; k < ar.get(j).size(); k++)
+						zonaTemp.add(ar.get(j).get(k));
+				}
+			}
+			
+			for(int j = 0; j < zonaTemp.size(); j++) {
+				for(int k = 0; k < zonaTemp.size(); k++) {
+					if(j != k && zonaTemp.get(j).equals(zonaTemp.get(k))) {
+						zonaTemp.remove(k);
+						k = 0;
+					}
+				}
+			}
+			
+			if(zonaTemp.size() > count)
+				count = zonaTemp.size();
+			
+		}
+		
+		float fit = 0;
+		if(count > 1)
+			fit = count / aCoverage.length;
+		
 		return fit;
 
 	}
 
 	/**
 	 * 
-	 * @param init
-	 * @param end
-	 * @return
+	 * @param init first antenna
+	 * @param end second antenna
+	 * @return true -> connection, false->no connection
+	 * 
+	 * Check if there is a connection between two antennas
 	 */
 	private boolean isConnected(Antenna init, Antenna end) {
 		float distance = (float) Math
@@ -428,82 +439,59 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	}
 
+	/**
+	 * 
+	 * @param i index of antenna a evaluar
+	 * @param aCoverage all areas to cover
+	 * @return list of coverage area of selected antenna
+	 */
 	private ArrayList<Integer> coversTheArea(int i, CoverageArea[] aCoverage) {
-		// verificare se l'antenna copre l'area, non importa l'intensità e la percentuale di area coperta.
-		// Se la copre ritorna l'area che copre, potrebbe coprirne più di una, quindi il valore di ritorno è un array di aree
-		// Se la lunghezza di "areas" è 0, l'antenna non copre nessuna area
 		
 		ArrayList<Integer> areas = new ArrayList<Integer>();
-		
-		int startX, endX, startY, endY;
-		
+
 		for (int j = 0; j < aCoverage.length; j++) {
-			
-			if (aCoverage[j].getX1() < aCoverage[j].getX2()) {
-				startX = aCoverage[j].getX1();
-				endX = aCoverage[j].getX2();
+
+			boolean coverage = false;
+			float distance = (float) Math.sqrt(Math.pow(aCoverage[j].getX1() - genes[i].getX(), 2)
+					+ Math.pow(aCoverage[j].getY1() - genes[i].getY(), 2));
+
+			if (distance < genes[i].getCoverageWidth()) {
+				coverage = true;
 			} else {
-				startX = aCoverage[j].getX2();
-				endX = aCoverage[j].getX1();
+				distance = (float) Math.sqrt(Math.pow(aCoverage[j].getX1() - genes[i].getX(), 2)
+						+ Math.pow(aCoverage[j].getY2() - genes[i].getY(), 2));
+
+				if (distance < genes[i].getCoverageWidth()) {
+					coverage = true;
+				} else {
+					distance = (float) Math.sqrt(Math.pow(aCoverage[j].getX2() - genes[i].getX(), 2)
+							+ Math.pow(aCoverage[j].getY1() - genes[i].getY(), 2));
+
+					if (distance < genes[i].getCoverageWidth()) {
+						coverage = true;
+					} else {
+						distance = (float) Math.sqrt(Math.pow(aCoverage[j].getX2() - genes[i].getX(), 2)
+								+ Math.pow(aCoverage[j].getY2() - genes[i].getY(), 2));
+
+						if (distance < genes[i].getCoverageWidth()) {
+							coverage = true;
+						}
+					}
+
+				}
 			}
-			
-			if (aCoverage[j].getY1() < aCoverage[j].getY2()) {
-				startY = aCoverage[j].getY1();
-				endY = aCoverage[j].getY2();
-			} else {
-				startY = aCoverage[j].getY2();
-				endY = aCoverage[j].getY1();
-			}
-			
-		
-			
-			if (genes[i].getX() >= startX && genes[i].getX() <= endX && genes[i].getY() >= startY
-					&& genes[i].getY() <= endY) {
+
+			if (coverage)
 				areas.add(j);
-			} else {
-				// Verificare se l'antenna si trova fuori ma copre la zona, in caso ritorna true
-				// Calcolo la distanza tra i vertici della zona e il punto centrale dell'antenna
-				// Se sono minori del raggio dell'antenna, l'antenna copre la zona
-			}
-			
-		}
-		
-		/*
-		boolean present = false;
-		int startX, endX, startY, endY;
-		for (int j = 0; j < aCoverage.length; j++) {
-			if (aCoverage[j].getX1() < aCoverage[j].getX2()) {
-				startX = aCoverage[j].getX1();
-				endX = aCoverage[j].getX2();
-			} else {
-				startX = aCoverage[j].getX2();
-				endX = aCoverage[j].getX1();
-			}
-
-			if (aCoverage[j].getY1() < aCoverage[j].getY2()) {
-				startY = aCoverage[j].getY1();
-				endY = aCoverage[j].getY2();
-			} else {
-				startY = aCoverage[j].getY2();
-				endY = aCoverage[j].getY1();
-			}
-
-			if (genes[i].getX() >= startX && genes[i].getX() <= endX && genes[i].getY() >= startY
-					&& genes[i].getY() <= endY) {
-				present = true;
-			} else {
-				// Verificare se l'antenna si trova fuori ma copre la zona, in caso ritorna true
-			}
 
 		}
-		*/
 
 		return areas;
 	}
 
 	/**
 	 * 
-	 * @return valore di fitness dell'individuo
+	 * @return fitness value of the individual
 	 */
 	public float getFitnessValue() {
 		return fitnessValue;
@@ -511,8 +499,8 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param index indice dell'antenna
-	 * @return antenna richiesta
+	 * @param index index of antenna
+	 * @return antenna requested
 	 */
 	public Antenna getGene(int index) {
 		return this.genes[index];
@@ -532,7 +520,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param fitnessValue valore di fitness dell'individuo
+	 * @param fitnessValue fitness value of the individual
 	 */
 	public void setFitnessValue(float fitnessValue) {
 		this.fitnessValue = fitnessValue;
@@ -540,11 +528,11 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param gridWidth dimnensione della griglia
-	 * @param accidents accidenti geografici
+	 * @param gridWidth grid width
+	 * @param accidents geographical incidents
 	 * 
-	 *                  Stampa a schermo una rappresentazione parziale
-	 *                  dell'individuo, senza considerare le zone da coprire
+	 *                  Print a partial representation on screen
+	 * 					of the individual, without considering the areas to be covered
 	 */
 	public void print(int gridWidth, Accident[] accidents) {
 		int[][] areaTotal = insertAntennasArea(gridWidth);
@@ -554,12 +542,12 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param gridWidth dimensione della griglia
-	 * @param accidents accidenti geografici
-	 * @param aCoverage zone da coprire
+	 * @param gridWidth grid width
+	 * @param accidents geographical incidents
+	 * @param aCoverage areas coverage
 	 * 
-	 *                  Stampa a schermo una rappresentazione completa
-	 *                  dell'individuo
+	 *                  Print a complete representation on screen
+	 * 					of the individual
 	 */
 	public void print(int gridWidth, Accident[] accidents, CoverageArea[] aCoverage) {
 		int[][] areaTotal = insertAntennasArea(gridWidth);
@@ -572,7 +560,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @return tutte le antenne che compongono l'individuo
+	 * @return all the antennas that make up the individual
 	 */
 	public Antenna[] getAntennas() {
 		return this.genes;
@@ -580,7 +568,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	@Override
 	public String toString() {
-		String ind = "Modelli antenne: \n";
+		String ind = "Antennas models: \n";
 
 		for (int i = 0; i < genes.length; i++)
 			ind += "Antenna " + i + ", coverage: " + genes[i].getCoverageWidth() + ", cost: " + genes[i].getCost()
@@ -593,8 +581,8 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	}
 
 	/**
-	 * Compara due individui 0 -> se hanno la stessa fitness 1 -> se ind1.fitness <
-	 * ind2.fitness -1 -> se ind1.fitness > ind2.fitness
+	 * Compare two individuals 0 -> if they have the same fitness 1 -> if ind1.fitness <
+	 * ind2.fitness -1 -> if ind1.fitness > ind2.fitness
 	 */
 	@Override
 	public int compareTo(Individual ind) {
@@ -607,7 +595,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	}
 
 	/**
-	 * Clona un individuo, viene eseguita una clonazione profonda
+	 * Clone an individual, a deep cloning is performed
 	 */
 	@Override
 	public Object clone() {

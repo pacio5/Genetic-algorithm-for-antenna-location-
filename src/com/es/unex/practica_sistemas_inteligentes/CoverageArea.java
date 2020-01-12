@@ -4,22 +4,22 @@ package com.es.unex.practica_sistemas_inteligentes;
  * @author eliapacioni
  * @version 0.1
  * 
- * Classe che definisce la struttura dell'area che deve essere coperta e il modo di estrarre tale matrice dalla zona totale.
+ * Class defining the structure of the area to be covered and how to extract this matrix from the total area.
  *
  */
 public class CoverageArea {
 
 	/**
-	 * Coordinate dell'area
+	 * Area coordinates
 	 */
 	private int x1, y1, x2, y2;
 	/**
-	 * Copertura(potenza) minima del segnale all'interno dell'area
+	 * Minimum signal coverage (power) within the area
 	 */
 	private int minimumPower;
 
 	/**
-	 * Costruttore senza parametri, area nulla
+	 * Manufacturer without parameters, zero area
 	 */
 	public CoverageArea() {
 		x1 = -1;
@@ -31,13 +31,13 @@ public class CoverageArea {
 
 	/**
 	 * 
-	 * @param x1 coordinata X punto 1
-	 * @param y1 coordinata Y punto 1
-	 * @param x2 coordinata X punto 2
-	 * @param y2 coordinata Y punto 2
-	 * @param minimumPower Copertura(potenza) minima del segnale all'interno dell'area
+	 * @param x1 coordinate X point 1
+	 * @param y1 coordinate Y point 1
+	 * @param x2 coordinate X point 2
+	 * @param y2 coordinate Y point 2
+	 * @param minimumPower Minimum signal coverage (power) within the area
 	 * 
-	 * Costruttore parametrico, definisce un'area da coprire
+	 * Parametric builder, defines an area to cover
 	 */
 	public CoverageArea(int x1, int y1, int x2, int y2, int minimumPower) {
 		this.x1 = x1;
@@ -49,10 +49,10 @@ public class CoverageArea {
 
 	/**
 	 * 
-	 * @param areaTotal zona totale
-	 * @return matrice dell'area da coprire
+	 * @param areaTotal total area
+	 * @return matrix of the area to be covered
 	 * 
-	 * Estrae la matrice dell'area da coprire dalla zona totale
+	 * Extracts the matrix of the area to be covered from the total area
 	 */
 	public int[][] getMatrixArea(int[][] areaTotal) {
 		int startX, endX, startY, endY;
@@ -106,7 +106,7 @@ public class CoverageArea {
 
 	/**
 	 * 
-	 * @return Copertura(potenza) minima del segnale all'interno dell'area
+	 * @return Minimum signal coverage (power) within the area
 	 */
 	public int getMinimumPower() {
 		return minimumPower;

@@ -3,25 +3,25 @@ package com.es.unex.practica_sistemas_inteligentes;
 /**
  * @author eliapacioni
  *
- *         Incapsula i metodi di stampa delle informazioni a video per snellire
- *         la programmazione e aumentare la leggibilità nelle altre classi
+ *         Encapsulates on-screen information printing methods for streamlining
+ * 			programming and increase readability in other classes
  */
 public class Utility {
 
 	/**
-	 * Stampa a video le informazioni del programmatore
+	 * Print programmer information on screen
 	 */
 	public static void infoDeveloper() {
 		System.out.println("----------------------------------------------------- \n"
 				+ "-- Sistemas Inteligentes                           -- \n"
-				+ "-- Curso 2019/20                                   -- \n"
+				+ "-- Course 2019/20                                   -- \n"
 				+ "-- Professor: Francisco Chávez de la O             -- \n"
 				+ "-- Student: Elia Pacioni                           -- \n"
 				+ "-----------------------------------------------------");
 	}
 
 	/**
-	 * Indica che c'è stato un errore
+	 * Indicates that there has been an error
 	 */
 	public static void error(boolean colors) {
 		if (colors)
@@ -35,7 +35,7 @@ public class Utility {
 	}
 
 	/**
-	 * Segnala la stampa dell'individuo migliore
+	 * Report the press of the best individual
 	 */
 	public static void bestIndividual(int i, boolean colors) {
 		if (colors)
@@ -49,16 +49,7 @@ public class Utility {
 	}
 
 	/**
-	 * Informa che un valore non è corretto
-	 * 
-	 * @param value - valore da segnalare come incorretto
-	 */
-	public static void incorrectValue(String value) {
-		System.out.println("Valor incorrecto para: " + value);
-	}
-
-	/**
-	 * Segnala che l'esecuzione è terminata
+	 * Report that the execution has ended
 	 */
 	public static void end() {
 		System.out.println("----------------------------------------------------- \n"
@@ -68,9 +59,9 @@ public class Utility {
 
 	/**
 	 * 
-	 * @param areaTotal matrice della zona da stampare
+	 * @param areaTotal matrix of the zone to be printed
 	 * 
-	 *                  Stampa a video la matrice che definisce una zona
+	 *                  Print on screen the matrix that defines a zone
 	 */
 	public static void printArea(int[][] areaTotal) {
 		System.out.println("\n");

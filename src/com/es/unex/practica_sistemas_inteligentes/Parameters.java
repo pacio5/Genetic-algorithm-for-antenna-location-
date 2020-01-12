@@ -13,97 +13,110 @@ import java.util.StringTokenizer;
  * @author eliapacioni
  * @version 0.1
  * 
- * Questa classe contiene i parametri iniziali letti dal file di configurazione,
- * i parametri verranno usati all'interno di tutto il programma e sono racchiusi qui per facilitarne la lettura.
- * Poiché non devono mutare nel corso dell'esecuzione del programma, l'accesso alle proprietà è consentito in sola lettura.
+ * This class contains the initial parameters read from the configuration file,
+ * the parameters will be used throughout the program and are enclosed here for easy reading.
+ * Since they must not change during the execution of the program, access to the properties is allowed in read-only mode.
  * 
  */
 public class Parameters {
 
 	/**
-	 * Dimensione della popolazione
+	 * Population size
 	 */
 	private int popSize; 
 	/**
-	 * Numero di iterazioni massime 
+	 * Maximum number of iterations 
 	 */
 	private int iter; 
 	/**
-	 * Proabilità di effettuare il crossover
+	 * Crossover Probility
 	 */
 	private float pCrossover;
 	/**
-	 * Probabilità di effettuare la mutazione
+	 * Probability of mutation
 	 */
 	private float pMutation; 
 	/**
-	 * Numero di elitisti (può essere compreso tra 0 e la dimensione della popolazione)
+	 * Number of elitist (can be between 0 and population size)
 	 */
 	private int elitism;
 	/**
-	 * Tipo di rimpiazzamento scelto, stazionario o generazionale
-	 * false -> Stazionario
-	 * true -> Generazionale 
+	 * Type of replacement chosen, stationary or generational
+	 * false -> Stationary
+	 * true -> Generational 
 	 */
 	private boolean replacement;
 	/**
-	 * Operatore di crossover 
-	 * false -> crossoverMulti (2 punti) 
-	 * true -> crossover (1 punto)
+	 * Crossover operator 
+	 * false -> crossoverMulti (2 points) 
+	 * true -> crossover (1 point)
 	 */
 	private boolean opCrossover; 
 	/**
-	 * Operatore di mutazione
-	 * false -> mutate(Antennas[]), muta un'antenna
-	 * true -> mutate() , muta la posizione
+	 * Mutation operator
+	 * false -> mutate(Antennas[]), mutate an antenna
+	 * true -> mutate() , changes the position
 	 */
 	private boolean opMutation; 
 	/**
-	 * Algoritmo di selezione
+	 * Selection algorithm
 	 * false -> RouletteWheel
-	 * true -> Torneo
+	 * true -> Tournament
 	 */
 	private boolean alSel; 
 	/**
-	 * Numero massimo di antenne per un individuo
+	 * Maximum number of antennas for an individual
 	 */
 	private int nMaxAntenna; 
 	/**
-	 * Costo Medio delle antenne * nMaxAntenna
-	 * Viene usato per calcolare la bontà del prezzo nella fitness
+	 * Average cost of antennas * nMaxAntenna
+	 * It is used to calculate the goodness of the price in fitness
 	 */
 	private int avgCostAntennas; 
 	/**
-	 * Dimensione della griglia (la griglia è sempre quadrata)
+	 * Grid size (the grid is always square)
 	 */
 	private int gridWidth;
 	/**
-	 * Zone che devono essere coperte
+	 * Areas to be covered
 	 */
 	private CoverageArea[] coverageAreas; 
 	/**
-	 * Accidenti geografici
+	 * Geographical incidents
 	 */
 	private Accident[] accidents; 
 	/**
-	 * Modelli di antenne disponibili
+	 * Available antenna models
 	 */
 	private Antenna[] modAntennas; 
 	/**
-	 * Gestione di colori nel terminale: true -> attiva i colori, false -> disattiva
+	 * Color management in the terminal: true -> activate colors, false -> deactivate
+	 * For the final printing of the individual is always active
 	 */
-	
 	private boolean colors;
+	/**
+	 * Importance of area coverage in the algorithm
+	 */
+	private int weightingAreas;
+	/**
+	 * Importance of keeping the cost of antennas low in the algorithm
+	 */
+	private int weightingCost;
+	/**
+	 * Importance of connection between areas
+	 */
+	private int weightingConnection;
+	
 	
 
 	/**
-	 * Costruttore senza parametri, istanzia la classe con valori di default
+	 * Manufacturer without parameters, instantiates the class with default values
 	 */
 	public Parameters() {
 		popSize = 0;
 		iter = 0;
-		pCrossover = 0;
-		pMutation = 0;
+		pCrossover = 100;
+		pMutation = 100;
 		elitism = 0;
 		replacement = false;
 		opCrossover = false;
@@ -115,17 +128,19 @@ public class Parameters {
 		coverageAreas = null;
 		accidents = null;
 		colors = false;
+		weightingAreas = 60;
+		weightingCost = 30;
+		weightingConnection = 10;
 	}
 
 	/**
 	 * 
-	 * @param config file da cui leggere i parametri di configurazione
+	 * @param config file from which to read the configuration parameters
 	 * 
-	 * Legge i parametri di configurazione e li memorizza nelle apposite proprietà.
+	 * Reads the configuration parameters and stores them in the appropriate properties.
 	 */
 	public void implementParameters(File config) {
 		File f = config;
-		// Leggo il file di configurazione
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
 			ArrayList<Antenna> antennasTemp = new ArrayList<Antenna>();
@@ -199,6 +214,18 @@ public class Parameters {
 						antennasTemp.add(new Antenna(Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken())));
 						break;
 					
+					case "weightingareas":
+						weightingAreas = Integer.parseInt(tok.nextToken());
+						break;
+						
+					case "weightingcost":
+						weightingCost = Integer.parseInt(tok.nextToken());
+						break;
+						
+					case "weightingconnection":
+						weightingConnection = Integer.parseInt(tok.nextToken());
+						break;
+					
 					}
 					
 				}
@@ -238,7 +265,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return int dimensione della popolazione
+	 * @return int population size
 	 */
 	public int getPopSize() {
 		return popSize;
@@ -246,7 +273,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return int numero di iterazioni massime
+	 * @return int maximum number of iterations
 	 */
 	public int getIter() {
 		return iter;
@@ -256,7 +283,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return float probabilità di effettuare il crossover
+	 * @return float probability of crossover
 	 */
 	public float getpCrossover() {
 		return pCrossover;
@@ -264,7 +291,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return float probabilità di effettuare la mutazione
+	 * @return float probability of mutation
 	 */
 	public float getpMutation() {
 		return pMutation;
@@ -272,7 +299,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return int numero di elitisti
+	 * @return int number of elitist
 	 */
 	public int getElitism() {
 		return elitism;
@@ -280,7 +307,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return boolean strategia di rimpiazzamento scelta
+	 * @return boolean chosen replacement strategy
 	 */
 	public boolean isReplacement() {
 		return replacement;
@@ -288,7 +315,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return boolean operatore di crossover scelto
+	 * @return boolean selected crossover operator
 	 */
 	public boolean isOpCrossover() {
 		return opCrossover;
@@ -296,7 +323,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return boolean operatore di mutazione scelto
+	 * @return boolean selected mutation operator
 	 */
 	public boolean isOpMutation() {
 		return opMutation;
@@ -304,7 +331,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return boolean operatore di selezione scelto
+	 * @return boolean selected operator
 	 */
 	public boolean isAlSel() {
 		return alSel;
@@ -312,7 +339,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return int numero massimo di antenne posizionabili per un individuo
+	 * @return int maximum number of antennas that can be placed for an individual
 	 */
 	public int getnMaxAntennas() {
 		return nMaxAntenna;
@@ -320,7 +347,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return Antenna[] modelli di antenne disponibili
+	 * @return Antenna[] models of available antennas
 	 */
 	public Antenna[] getModAntennas() {
 		return modAntennas;
@@ -328,7 +355,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return int dimensione lato del quadrato
+	 * @return int side size of the square
 	 */
 	public int gridWidth() {
 		return gridWidth;
@@ -336,7 +363,7 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return CoverageAreas[] zone di copertura 
+	 * @return CoverageAreas[] coverage areas 
 	 */
 	public CoverageArea[] getCoverageArea() {
 		return coverageAreas;
@@ -344,14 +371,14 @@ public class Parameters {
 
 	/**
 	 * 
-	 * @return Accident[] accidentes
+	 * @return Accident[] accidents
 	 */
 	public Accident[] getAccidents() {
 		return accidents;
 	}
 
 	/**
-	 * @return the costoAntennasMedio
+	 * @return the average cost of antennas
 	 */
 	public int getAvgCostAntennas() {
 		return avgCostAntennas;
@@ -359,11 +386,37 @@ public class Parameters {
 	
 	/**
 	 * 
-	 * @return serve per gestire i colori nel terminale
+	 * @return is used to manage the colours in the terminal
 	 */
 	public boolean isColors() {
 		return colors;
 	}
+
+	/**
+	 * 
+	 * @return weigthing of areas coverage
+	 */
+	public int getWeightingAreas() {
+		return weightingAreas;
+	}
+
+	/**
+	 * 
+	 * @return weigthing of antennas cost
+	 */
+	public int getWeightingCost() {
+		return weightingCost;
+	}
+
+	/**
+	 * 
+	 * @return weigthing of areas connection
+	 */
+	public int getWeightingConnection() {
+		return weightingConnection;
+	}
+	
+	
 	
 
 }

@@ -4,26 +4,26 @@ package com.es.unex.practica_sistemas_inteligentes;
  * @author eliapacioni
  * @version 0.1
  * 
- * Classe che definisce la struttura di un antenna
- * Implementa l'interfaccia Cloneable per eseguire la clonazione di un antenna e non condizionare le successive modifiche
+ * Class defining the structure of an antenna
+ * Implements the Cloneable interface to clone an antenna and not condition subsequent changes
  */
 public class Antenna implements Cloneable {
 	
 	/**
-	 * Potenza dell'antenna
+	 * Antenna power
 	 */
 	private int coverageWidth;
 	/**
-	 * Costo dell'antenna
+	 * Antenna cost
 	 */
 	private int cost;
 	/**
-	 * Posizione
+	 * Position
 	 */
 	private int x, y;
 	
 	/**
-	 * Costruttore senza parametri, antenna nulla
+	 * Manufacturer without parameters, no antenna
 	 */
 	public Antenna() {
 		coverageWidth = -1;
@@ -34,11 +34,11 @@ public class Antenna implements Cloneable {
 	
 	/**
 	 * 
-	 * @param coverageWidth potenza antenna
-	 * @param cost costo dell'antenna
+	 * @param coverageWidth power ofantenna
+	 * @param cost antenna cost
 	 * 
-	 * Crea un'antenna definendone potenza e costo, 
-	 * la posizione verrà definita solo nel momento in cui verrà usata da un individuo
+	 * Creates an antenna by defining its power and cost, 
+	 * the position will be defined only when it will be used by an individual
 	 */
 	public Antenna(int coverageWidth, int cost) {
 		this.coverageWidth = coverageWidth;
@@ -49,7 +49,7 @@ public class Antenna implements Cloneable {
 
 	/**
 	 * 
-	 * @return recupera la potenza dell'antenna
+	 * @return recovers the power of the antenna
 	 */
 	public int getCoverageWidth() {
 		return coverageWidth;
@@ -61,7 +61,7 @@ public class Antenna implements Cloneable {
 
 	/**
 	 * 
-	 * @return recupera il costo dell'antenna
+	 * @return recovers the cost of the antenna
 	 */
 	public int getCost() {
 		return cost;
@@ -73,10 +73,10 @@ public class Antenna implements Cloneable {
 	
 	/**
 	 * 
-	 * @param x coordinata x
-	 * @param y coordinata y
+	 * @param x coordinate x
+	 * @param y coordinate y
 	 * 
-	 * Imposta la posizione dell'antenna
+	 * Set position of antenna
 	 */
 	public void setPosition(int x, int y) {
 		this.x = x;
@@ -85,7 +85,7 @@ public class Antenna implements Cloneable {
 
 	/**
 	 * 
-	 * @return recupera la coordinata X
+	 * @return retrieve the X coordinate
 	 */
 	public int getX() {
 		return x;
@@ -93,7 +93,7 @@ public class Antenna implements Cloneable {
 
 	/**
 	 * 
-	 * @return recupera la coordinata Y
+	 * @return retrieve the Y coordinate
 	 */
 	public int getY() {
 		return y;
@@ -101,7 +101,7 @@ public class Antenna implements Cloneable {
 
 	@Override
 	public String toString() {
-		return "Antena: \n coverageWidth=" + coverageWidth + "\n cost=" + cost + "\n x=" + x + ", y=" + y + "\n";
+		return "Antenna: \n coverageWidth=" + coverageWidth + "\n cost=" + cost + "\n x=" + x + ", y=" + y + "\n";
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package com.es.unex.practica_sistemas_inteligentes;
 /**
  * @author eliapacioni
  * 
- * Gestisce i colori delle stampe a video
+ * Manages the colors of screen prints
  */
 public class ConsoleColors {
     // Reset

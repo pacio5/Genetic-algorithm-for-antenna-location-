@@ -7,22 +7,22 @@ import java.util.Random;
  * @author eliapacioni
  * @version 0.1
  * 
- * Questa classe definisce la struttura, le proprietà i metodi della popolazione
+ * This class defines the structure, properties and methods of the population.
  */
 public class Population {
 
 	/**
-	 * Parametri generali
+	 * General parameters
 	 */
 	private Parameters p;
 
 	/**
-	 * Vettore degli individui che compongono la popolazione
+	 * Vector of the individuals that make up the population
 	 */
 	private Individual[] individuals;
 
 	/**
-	 * Costruttore di default
+	 * Default constructor
 	 */
 	public Population() {
 		individuals = null;
@@ -31,9 +31,9 @@ public class Population {
 
 	/**
 	 * 
-	 * @param p parametri generali del programma, letti dal file di configurazione
+	 * @param p general parameters of the program, read from the configuration file
 	 * 
-	 * Costruttore parametrico, imposta i parametri e il numero di individui richiesti
+	 * Parametric constructor, sets parameters and number of individuals required
 	 */
 	public Population(Parameters p) {
 		this.p = p;
@@ -42,7 +42,7 @@ public class Population {
 	}
 
 	/**
-	 * Crea la popolazione a partire dai parametri indicati
+	 * Create the population from the parameters indicated
 	 */
 	public void init() {
 		for (int i = 0; i < individuals.length; i++)
@@ -52,12 +52,12 @@ public class Population {
 	}
 
 	/**
-	 * Valuta tutta la popolazione e la ordina per il valore di fitness di ogni individuo
+	 * Evaluates the entire population and orders it for the fitness value of each individual
 	 */
 	public void evalua() {
 		for (int i = 0; i < individuals.length; i++) {
 			individuals[i].evaluate(p.gridWidth(), p.getAccidents(), p.getCoverageArea(),
-					p.getAvgCostAntennas());
+					p.getAvgCostAntennas(), p.getWeightingAreas(), p.getWeightingCost(), p.getWeightingConnection());
 		}
 
 		Arrays.parallelSort(individuals);
@@ -65,11 +65,11 @@ public class Population {
 
 	/**
 	 * 
-	 * @param ind1 individuo 1
-	 * @param ind2 individuo 2
-	 * @return Individual[] vettore degli individui dopo il crossover
+	 * @param ind1 individual 1
+	 * @param ind2 individual 2
+	 * @return Individual[] vector of individuals after the crossover
 	 * 
-	 * Effettua il crossover in un punto sui due individui
+	 * Make the crossover at one point on the two individuals
 	 */
 	public static Individual[] crossover(Individual ind1, Individual ind2) {
 		Random rand = new Random();
@@ -95,9 +95,9 @@ public class Population {
 
 	/**
 	 * 
-	 * @param ind1 individuo 1
-	 * @param ind2 individuo 2
-	 * @return Individual[] vettore degli individui dopo il crossover
+	 * @param ind1 individual 1
+	 * @param ind2 individual 2
+	 * @return Individual[] vector of individuals after the crossover
 	 * 
 	 * Effettua il crossover in due punti sui due individui
 	 */
@@ -147,9 +147,9 @@ public class Population {
 
 	/**
 	 * 
-	 * @return Individual, individuo selezionato
+	 * @return Individual, individual selected
 	 * 
-	 * Selezione mediante torneo
+	 * Selection by tournament
 	 */
 	public Individual torneo() {
 		Random rand = new Random();
@@ -173,9 +173,9 @@ public class Population {
 	
 	/**
 	 * 
-	 * @return Individual, individuo selezionato
+	 * @return Individual, individual selected
 	 * 
-	 * Selezione mediante roulette
+	 * Selection by roulette
 	 */
 	public Individual rouletteWheel() {
 		float[] fitnessNormalized = new float[individuals.length];
@@ -186,7 +186,6 @@ public class Population {
 		
 		for(int i = 0; i < individuals.length; i++) {
 			fitnessNormalized[i] = individuals[i].getFitnessValue() / total;
-			System.out.println(i + ": " + fitnessNormalized[i]);
 		}
 				
 		Random rand = new Random();
@@ -195,21 +194,20 @@ public class Population {
 		float xn = 0;
 		while(xn <= value) {
 			xn += (float) fitnessNormalized[i];
-			System.out.println(xn);
 			i++;
 		}
 		
-		if(i != 0) --i;
+		if(i > 0) --i;
 		return individuals[i];
 	}
 
 	
 	/**
 	 * 
-	 * @param ind Invidivuo nuovo
-	 * @param index indice dell'individuo
+	 * @param ind New invidivual
+	 * @param index index of individual
 	 * 
-	 * Rimpiazza il vecchio individuo con il nuovo
+	 * Replace the old individual with the new
 	 */
 	public void setIndividual(Individual ind, int index) {
 		individuals[index] = (Individual) ind.clone();
@@ -217,7 +215,7 @@ public class Population {
 
 	/**
 	 * 
-	 * @return Individual[] tutti gli individui della popolazione
+	 * @return Individual[] all individuals in the population
 	 */
 	public Individual[] getIndividuals() {
 		return individuals;
@@ -225,8 +223,8 @@ public class Population {
 
 	/**
 	 * 
-	 * @param index indice dell'individuo richiesto
-	 * @return Individual individuo richiesto
+	 * @param index index of the required individual
+	 * @return Individual required individual
 	 */
 	public Individual getIndividual(int index) {
 		return individuals[index];
@@ -234,7 +232,7 @@ public class Population {
 
 	/**
 	 * 
-	 * @return Individual individuo con la migliore fitness
+	 * @return Individual individual with the best fitness
 	 */
 	public Individual getBestIndividual() {
 		return individuals[0];
@@ -242,7 +240,7 @@ public class Population {
 
 	/**
 	 * 
-	 * @param pop rimpiazza la popolazione corrente con la nuova popoplazione
+	 * @param pop replaces the current population with the new popopulation
 	 */
 	public void setPopulation(Population pop) {
 		this.individuals = pop.getIndividuals().clone();
