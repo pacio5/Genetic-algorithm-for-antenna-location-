@@ -1,5 +1,6 @@
 package com.es.unex.practica_sistemas_inteligentes;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -17,7 +18,8 @@ public class Main {
 
 		Utility.infoDeveloper();
 
-		Parameters p = new Parameters(true);
+		Parameters p = new Parameters();
+		p.implementParameters(new File("config.txt"));
 
 		// Creo la popolazione
 		Population population = new Population(p);

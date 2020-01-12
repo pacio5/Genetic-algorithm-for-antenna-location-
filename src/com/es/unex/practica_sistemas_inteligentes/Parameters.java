@@ -6,7 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * @author eliapacioni
@@ -108,62 +109,12 @@ public class Parameters {
 		opCrossover = false;
 		opMutation = false;
 		alSel = false;
+		gridWidth = 0;
 		nMaxAntenna = 0;
 		modAntennas = null;
-		gridWidth = 0;
+		coverageAreas = null;
+		accidents = null;
 		colors = false;
-	}
-
-	public Parameters(boolean test) {
-		popSize = 1000;
-		iter = 1000;
-		pCrossover = 100;
-		pMutation = 100;
-		elitism = 1;
-		replacement = true;
-		opCrossover = false;
-		opMutation = true;
-		alSel = true;
-		nMaxAntenna = 5;
-		gridWidth = 100;
-
-		modAntennas = new Antenna[6];
-		modAntennas[0] = new Antenna(4, 200);
-		modAntennas[1] = new Antenna(7, 1000);
-		modAntennas[2] = new Antenna(8, 425);
-		modAntennas[3] = new Antenna(12, 1300);
-		modAntennas[4] = new Antenna(5, 350);
-		modAntennas[5] = new Antenna(10, 1050);
-
-		coverageAreas = new CoverageArea[4];
-
-		coverageAreas[0] = new CoverageArea(8, 7, 10, 24, 5);
-		coverageAreas[1] = new CoverageArea(32, 37, 23, 47, 7);
-		coverageAreas[2] = new CoverageArea(82, 87, 73, 67, 4);
-		coverageAreas[3] = new CoverageArea(2, 87, 6, 77, 4);
-
-		int nAccidents = 2;
-		accidents = new Accident[nAccidents];
-
-		Random rand = new Random();
-
-		for (int i = 0; i < nAccidents; i++) {
-			accidents[i] = new Accident(rand.nextInt(gridWidth), rand.nextInt(gridWidth),
-					rand.nextInt(gridWidth), rand.nextInt(gridWidth), rand.nextInt(5));
-		}
-
-		avgCostAntennas = 0;
-
-		for (int i = 0; i < modAntennas.length; i++)
-			avgCostAntennas += modAntennas[i].getCost();
-		
-		avgCostAntennas/= modAntennas.length;
-			
-		
-		avgCostAntennas*= nMaxAntenna;
-		
-		colors = false;
-		
 	}
 
 	/**
@@ -177,16 +128,110 @@ public class Parameters {
 		// Leggo il file di configurazione
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
-			while (br.ready())
-				System.out.println(br.readLine());
-
+			ArrayList<Antenna> antennasTemp = new ArrayList<Antenna>();
+			ArrayList<CoverageArea> coverageAreaTemp = new ArrayList<CoverageArea>();
+			ArrayList<Accident> accidentsTemp = new ArrayList<Accident>();
+			while (br.ready()) {
+				//System.out.println(br.readLine());
+				String line = br.readLine();
+				if(!line.isEmpty()) {
+					StringTokenizer tok = new StringTokenizer(line);
+					String name = tok.nextToken().toLowerCase();
+					switch(name) {
+						
+					case "pobsize":
+						popSize = Integer.parseInt(tok.nextToken());
+						break;
+						
+					case "iter":
+						iter = Integer.parseInt(tok.nextToken());
+						break;
+						
+					case "pcrossover":
+						pCrossover = Integer.parseInt(tok.nextToken());
+						break;
+						
+					case "pmutation":
+						pMutation = Integer.parseInt(tok.nextToken());
+						break;
+					
+					case "elitism":
+						elitism = Integer.parseInt(tok.nextToken());
+						break;
+						
+					case "replacement":
+						replacement = Boolean.parseBoolean(tok.nextToken());
+						break;
+						
+					case "opcrossover":
+						opCrossover = Boolean.parseBoolean(tok.nextToken());
+						break;
+						
+					case "opmutation":
+						opMutation = Boolean.parseBoolean(tok.nextToken());
+						break;
+						
+					case "alsel":
+						alSel = Boolean.parseBoolean(tok.nextToken());
+						break;
+					
+					case "nmaxantenna":
+						nMaxAntenna = Integer.parseInt(tok.nextToken());
+						break;
+						
+					case "anchocuadricula":
+						gridWidth = Integer.parseInt(tok.nextToken());
+						break;
+						
+					case "colors":
+						colors = Boolean.parseBoolean(tok.nextToken());
+						break;
+						
+					case "zonacobertura":
+						coverageAreaTemp.add(new CoverageArea(Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken())));
+						break;
+						
+					case "accidente":
+						accidentsTemp.add(new Accident(Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken())));
+						break;
+						
+					case "antena":
+						antennasTemp.add(new Antenna(Integer.parseInt(tok.nextToken()), Integer.parseInt(tok.nextToken())));
+						break;
+					
+					}
+					
+				}
+			}
+			
 			br.close();
+			
+			coverageAreas = new CoverageArea[coverageAreaTemp.size()];
+			coverageAreaTemp.toArray(coverageAreas);
+			
+			accidents = new Accident[accidentsTemp.size()];
+			accidentsTemp.toArray(accidents);
+			
+			modAntennas = new Antenna[antennasTemp.size()];
+			antennasTemp.toArray(modAntennas);
+			
+			avgCostAntennas = 0;
+
+			for (int i = 0; i < modAntennas.length; i++)
+				avgCostAntennas += modAntennas[i].getCost();
+			
+			avgCostAntennas/= modAntennas.length;
+				
+			
+			avgCostAntennas*= nMaxAntenna;
+			
 		} catch (FileNotFoundException e) {
 			Utility.error(colors);
-			System.out.println("Problema al leer el fichero, fichero no encontrado");
+			System.out.println("File not found");
 			return;
 		} catch (IOException e) {
-			System.out.println("Problema al leer el fichero, IO exception");
+			Utility.error(colors);
+			System.out.println("IO Exception, syntax error in the file");
 			return;
 		}
 	}

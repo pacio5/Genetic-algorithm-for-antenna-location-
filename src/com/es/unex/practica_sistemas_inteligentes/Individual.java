@@ -69,9 +69,18 @@ public class Individual implements Comparable<Individual>, Cloneable {
 				// Un'antenna è invalida se sta nella stessa posizione di un'altra o sopra un
 				// accidente
 				
-				// controlla con un ciclo while 
-				if (antennaInvalid(i, accidents))
-					genes[i].setPosition(rand.nextInt(gridWidth), rand.nextInt(gridWidth));
+				// controlla con un ciclo while se l'antenna è valida o no
+				
+				boolean isValid = true;
+				do {
+					if (antennaInvalid(i, accidents)) {
+						genes[i].setPosition(rand.nextInt(gridWidth), rand.nextInt(gridWidth));
+						isValid = false;
+					} else {
+						isValid = true;
+					}
+				}
+				while(isValid == false);
 			} catch (CloneNotSupportedException e) {
 				System.out.println("Problemi nella clonazione dell'antenna");
 				i--;
@@ -375,7 +384,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 		// del grafo
 		ArrayList<Antenna> a = new ArrayList<Antenna>();
 		for (int i = 0; i < genes.length; i++)
-			if (isInTheArea(i, aCoverage))
+			if (coversTheArea(i, aCoverage).size() == 0)
 				a.add(genes[i]);
 
 		// Percorsi del grafo
@@ -419,7 +428,47 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	}
 
-	private boolean isInTheArea(int i, CoverageArea[] aCoverage) {
+	private ArrayList<Integer> coversTheArea(int i, CoverageArea[] aCoverage) {
+		// verificare se l'antenna copre l'area, non importa l'intensità e la percentuale di area coperta.
+		// Se la copre ritorna l'area che copre, potrebbe coprirne più di una, quindi il valore di ritorno è un array di aree
+		// Se la lunghezza di "areas" è 0, l'antenna non copre nessuna area
+		
+		ArrayList<Integer> areas = new ArrayList<Integer>();
+		
+		int startX, endX, startY, endY;
+		
+		for (int j = 0; j < aCoverage.length; j++) {
+			
+			if (aCoverage[j].getX1() < aCoverage[j].getX2()) {
+				startX = aCoverage[j].getX1();
+				endX = aCoverage[j].getX2();
+			} else {
+				startX = aCoverage[j].getX2();
+				endX = aCoverage[j].getX1();
+			}
+			
+			if (aCoverage[j].getY1() < aCoverage[j].getY2()) {
+				startY = aCoverage[j].getY1();
+				endY = aCoverage[j].getY2();
+			} else {
+				startY = aCoverage[j].getY2();
+				endY = aCoverage[j].getY1();
+			}
+			
+		
+			
+			if (genes[i].getX() >= startX && genes[i].getX() <= endX && genes[i].getY() >= startY
+					&& genes[i].getY() <= endY) {
+				areas.add(j);
+			} else {
+				// Verificare se l'antenna si trova fuori ma copre la zona, in caso ritorna true
+				// Calcolo la distanza tra i vertici della zona e il punto centrale dell'antenna
+				// Se sono minori del raggio dell'antenna, l'antenna copre la zona
+			}
+			
+		}
+		
+		/*
 		boolean present = false;
 		int startX, endX, startY, endY;
 		for (int j = 0; j < aCoverage.length; j++) {
@@ -447,8 +496,9 @@ public class Individual implements Comparable<Individual>, Cloneable {
 			}
 
 		}
+		*/
 
-		return present;
+		return areas;
 	}
 
 	/**

@@ -1,7 +1,29 @@
-Ancho de la cuadricula 100x100
+pobSize 1000
+iter 1000
+pCrossover 60
+pMutation 30
+elitism 1
+replacement true
+opCrossover false
+opMutation true
+alSel true
+nMaxAntenna 5
 
-Zonas cobertura (8, 7, 20, 45, 5) (38, 75, 26, 90, 7)
+anchoCuadricula 100
 
-Accidentes (10, 10, 23, 37, 3)
+ZonaCobertura 8 7 10 24 5
+ZonaCobertura 32 37 23 47 7
+ZonaCobertura 82 87 73 67 4
+ZonaCobertura 2 87 6 77 4
 
-Antenas (10, 500) (25, 5000) (5, 425)
+accidente 10 10 23 37 3
+accidente 20 10 3 7 2
+
+antena 4 200 
+antena 7 1000 
+antena 8 425
+antena 12 1300
+antena 5 350
+antena 10 1050
+
+colors false
