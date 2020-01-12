@@ -4,10 +4,11 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
+ * This class defines the structure, properties and methods of the population.
+ * 
  * @author eliapacioni
  * @version 0.1
- * 
- * This class defines the structure, properties and methods of the population.
+ *
  */
 public class Population {
 

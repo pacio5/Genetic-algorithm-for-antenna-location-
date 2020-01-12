@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
- * @author eliapacioni
- * @version 0.1
  * 
  * This class contains the initial parameters read from the configuration file,
  * the parameters will be used throughout the program and are enclosed here for easy reading.
  * Since they must not change during the execution of the program, access to the properties is allowed in read-only mode.
+ * 
+ * @author eliapacioni
+ * @version 0.1
  * 
  */
 public class Parameters {
@@ -42,26 +43,26 @@ public class Parameters {
 	private int elitism;
 	/**
 	 * Type of replacement chosen, stationary or generational
-	 * false -> Stationary
-	 * true -> Generational 
+	 * false: Stationary
+	 * true: Generational 
 	 */
 	private boolean replacement;
 	/**
 	 * Crossover operator 
-	 * false -> crossoverMulti (2 points) 
-	 * true -> crossover (1 point)
+	 * false: crossoverMulti (2 points) 
+	 * true: crossover (1 point)
 	 */
 	private boolean opCrossover; 
 	/**
 	 * Mutation operator
-	 * false -> mutate(Antennas[]), mutate an antenna
-	 * true -> mutate() , changes the position
+	 * false: mutate(Antennas[]), mutate an antenna
+	 * true: mutate() , changes the position
 	 */
 	private boolean opMutation; 
 	/**
 	 * Selection algorithm
-	 * false -> RouletteWheel
-	 * true -> Tournament
+	 * false: RouletteWheel
+	 * true: Tournament
 	 */
 	private boolean alSel; 
 	/**
@@ -90,7 +91,7 @@ public class Parameters {
 	 */
 	private Antenna[] modAntennas; 
 	/**
-	 * Color management in the terminal: true -> activate colors, false -> deactivate
+	 * Color management in the terminal: true: activate colors, false: deactivate
 	 * For the final printing of the individual is always active
 	 */
 	private boolean colors;

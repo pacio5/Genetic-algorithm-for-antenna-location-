@@ -1,10 +1,10 @@
 package com.es.unex.practica_sistemas_inteligentes;
 
 /**
+ * Encapsulates on-screen information printing methods for streamlining programming and increase readability in other classes
+ * 
  * @author eliapacioni
  *
- *         Encapsulates on-screen information printing methods for streamlining
- * 			programming and increase readability in other classes
  */
 public class Utility {
 
@@ -21,6 +21,7 @@ public class Utility {
 	}
 
 	/**
+	 * @param colors Color management in the terminal: true if print colors
 	 * Indicates that there has been an error
 	 */
 	public static void error(boolean colors) {
@@ -35,6 +36,8 @@ public class Utility {
 	}
 
 	/**
+	 * @param i index of iteration
+	 * @param colors Color management in the terminal: true if print colors
 	 * Report the press of the best individual
 	 */
 	public static void bestIndividual(int i, boolean colors) {

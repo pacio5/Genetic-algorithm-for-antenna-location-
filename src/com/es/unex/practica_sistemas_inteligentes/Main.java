@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
+ * Main class of the program 
+ * 
  * @author eliapacioni
  * @version 0.1
  *
@@ -12,7 +14,7 @@ import java.util.Random;
 public class Main {
 
 	/**
-	 * @param args
+	 * @param args unused
 	 */
 	public static void main(String[] args) {
 

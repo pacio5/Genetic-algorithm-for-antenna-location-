@@ -11,16 +11,16 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultUndirectedGraph;
 
 /**
- * @author eliapacioni
- * @version 0.1
- * 
- *          Class that defines the structure and actions of an individual.
+ * Class that defines the structure and actions of an individual.
  * 			Essential within the program because all the execution is
  * 			based on the use of individuals. Implements the interface
  * 			Cloneable to carry out the cloning of the individual, so as not to
  * 			having problems during subsequent changes Implement
  * 			the Comparable interface to make the comparison between individuals and
  * 			in order to order them by fitness value
+ * 
+ * @author eliapacioni
+ * @version 0.1
  * 
  */
 public class Individual implements Comparable<Individual>, Cloneable {
@@ -52,6 +52,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	 * @param nMaxAntena  maximum number of antennas that can compose the individual
 	 * @param modAntennas available antenna models
 	 * @param gridWidth   grid width
+	 * @param accidents	  Geographic accidents
 	 * 
 	 *                  He instantiates the individual by setting all his
 	 * 					characteristics, each time an antenna is created it evaluates whether
@@ -88,6 +89,9 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	 * @param accidents       geographical incidents
 	 * @param aCoverage       areas to cover
 	 * @param avgCostAntennas average cost of antennas
+	 * @param weightingAreas  importance of area coverage in the algorithm
+	 * @param weightingCost	  importance of keeping the cost of antennas low in the algorithm
+	 * @param weightingConnection importance of connection between areas
 	 * 
 	 *                        Evaluates the individual and saves his fitness value
 	 */
@@ -267,6 +271,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	/**
 	 * 
 	 * @param gridWidth grid width
+	 * @param accidents geographical incidents
 	 * 
 	 *                  Apply the mutation to the individual, changing position
 	 * 					of a randomly chosen antenna.
@@ -283,7 +288,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	 * 
 	 * @param index     index of the antenna to be verified
 	 * @param accidents geographical incidents
-	 * @return false -> antenna valid, true -> antenna invalid
+	 * @return false: antenna valid, true: antenna invalid
 	 * 
 	 *         Check if an antenna is invalid. An antenna is invalid if it is
 	 * 			placed on top of another antenna or on top of a geographical incident.
@@ -333,7 +338,8 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @return false -> valid, true -> invalid
+	 * @param accidents Geographic accidents
+	 * @return false: valid, true: invalid
 	 * 
 	 *         Check if an individual is disabled. An individual is disabled if he has
 	 * 			at least one invalid antenna.
@@ -351,7 +357,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 
 	/**
 	 * 
-	 * @param aCoverage
+	 * @param aCoverage coverage areas
 	 * @return fitness [0,1]
 	 * 
 	 * Assesses whether the areas are connected to each other and attributes a fitness
@@ -428,7 +434,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	 * 
 	 * @param init first antenna
 	 * @param end second antenna
-	 * @return true -> connection, false->no connection
+	 * @return true: connection, false: no connection
 	 * 
 	 * Check if there is a connection between two antennas
 	 */
@@ -507,6 +513,7 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	}
 
 	/**
+	 * @param index index of antenna
 	 * @param gene the genes to set
 	 */
 	public void setGene(int index, Antenna gene) {
@@ -581,8 +588,8 @@ public class Individual implements Comparable<Individual>, Cloneable {
 	}
 
 	/**
-	 * Compare two individuals 0 -> if they have the same fitness 1 -> if ind1.fitness <
-	 * ind2.fitness -1 -> if ind1.fitness > ind2.fitness
+	 * Compare two individuals 0: if they have the same fitness 1: if ind1.fitness  smaller than
+	 * ind2.fitness else -1
 	 */
 	@Override
 	public int compareTo(Individual ind) {

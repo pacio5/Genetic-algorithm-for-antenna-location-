@@ -1,5 +1,5 @@
-pobSize 10
-iter 10
+pobSize 100
+iter 100
 pCrossover 100
 pMutation 100
 elitism 1
@@ -7,7 +7,7 @@ replacement true
 opCrossover true
 opMutation true
 alSel true
-nMaxAntenna 5
+nMaxAntenna 7
 
 anchoCuadricula 100
 

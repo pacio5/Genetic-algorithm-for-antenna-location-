@@ -1,9 +1,10 @@
 package com.es.unex.practica_sistemas_inteligentes;
 
 /**
- * @author eliapacioni
- * 
  * Manages the colors of screen prints
+ * @author eliapacioni
+ * @version 0.1
+ * 
  */
 public class ConsoleColors {
     // Reset

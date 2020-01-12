@@ -1,11 +1,13 @@
 package com.es.unex.practica_sistemas_inteligentes;
 
 /**
+ * Class defining the structure of an antenna
+ * Implements the Cloneable interface to clone an antenna and not condition subsequent changes
+ * 
  * @author eliapacioni
  * @version 0.1
  * 
- * Class defining the structure of an antenna
- * Implements the Cloneable interface to clone an antenna and not condition subsequent changes
+ * 
  */
 public class Antenna implements Cloneable {
 	

@@ -1,10 +1,9 @@
 package com.es.unex.practica_sistemas_inteligentes;
 /**
+ * Class defining the structure of the area to be covered and how to extract this matrix from the total area.
  * 
  * @author eliapacioni
  * @version 0.1
- * 
- * Class defining the structure of the area to be covered and how to extract this matrix from the total area.
  *
  */
 public class CoverageArea {

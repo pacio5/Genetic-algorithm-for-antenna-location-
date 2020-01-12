@@ -1,10 +1,13 @@
 package com.es.unex.practica_sistemas_inteligentes;
 
 /**
- * @author eliapacioni
- * 
  * Defines a geographical incident. 
  * The level of incidence cannot be negative, at most 0.
+ * 
+ * @author eliapacioni
+ * @version 0.1
+ * 
+ * 
  */
 public class Accident {
 	/**
